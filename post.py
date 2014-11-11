@@ -79,7 +79,6 @@ def post_bills_twitter(new_bills):
 
 
 def post_bill_twitter(bill):
-    # TODO: 이름 바로 뒤에 handle 넣기
     bill = refine_bill_content(bill)
     try:
         proposer = bill['proposer_fullname']
@@ -147,3 +146,4 @@ if __name__ == '__main__':
         post_bills_facebook(bills)
     else:
         raise Exception('Unknown target')
+
