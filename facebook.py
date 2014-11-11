@@ -7,7 +7,7 @@ from oauthlib.common import urldecode
 from requests_oauthlib import OAuth2Session
 import requests
 
-from settings import FACEBOOK_CLIENT_ID, FACEBOOK_CLIENT_SECRET, FACEBOOK_OAUTH_TOKEN, FACEBOOK_PAGE_ID
+from settings import FACEBOOK
 
 AUTHORIZATION_BASE_URL = 'https://www.facebook.com/dialog/oauth'
 TOKEN_URL = 'https://graph.facebook.com/oauth/access_token'
@@ -28,7 +28,7 @@ def facebook_compliance_fix(session):
 
 
 def setup_oauth():
-    oauth = OAuth2Session(FACEBOOK_CLIENT_ID, redirect_uri=REDIRECT_URI, scope=["manage_pages","publish_stream"])
+    oauth = OAuth2Session(FACEBOOK['CLIENT_ID'], redirect_uri=REDIRECT_URI, scope=["manage_pages","publish_stream"])
     oauth = facebook_compliance_fix(oauth)
 
     authorization_url, state = oauth.authorization_url(AUTHORIZATION_BASE_URL)
@@ -36,19 +36,19 @@ def setup_oauth():
 
     redirect_response = raw_input('Paste the full redirect URL here:')
 
-    token = oauth.fetch_token(TOKEN_URL, client_secret=FACEBOOK_CLIENT_SECRET,
+    token = oauth.fetch_token(TOKEN_URL, client_secret=FACEBOOK['CLIENT_SECRET'],
                         authorization_response=redirect_response)
 
     return token["access_token"]
 
 
 def get_oauth():
-    oauth = OAuth2Session(FACEBOOK_CLIENT_ID, redirect_uri=REDIRECT_URI)
+    oauth = OAuth2Session(FACEBOOK['CLIENT_ID'], redirect_uri=REDIRECT_URI)
     oauth = facebook_compliance_fix(oauth)
     return oauth
 
 
 def post(message):
     oauth = get_oauth()
-    oauth.post(url=POST_URL % FACEBOOK_PAGE_ID, data={"message":message,"access_token":FACEBOOK_OAUTH_TOKEN})
+    oauth.post(url=POST_URL % FACEBOOK['PAGE_ID'], data={"message":message,"access_token":FACEBOOK['OAUTH_TOKEN']})
 

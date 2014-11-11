@@ -9,7 +9,7 @@ import pdf
 import re
 
 from redis_queue import RedisQueue
-from settings import BASEURL, DIR, PAGE_SIZE, X
+from const import BASEURL, DIR, PAGE_SIZE, X
 import utils
 
 
@@ -31,7 +31,7 @@ def fetch_new_bill_ids(assembly_id):
     existing_ids = set(line.split(',', 1)[0].strip('"') for line in lines)
     last_proposed_date = max(line.split('","', 6)[5].strip('"') for line in lines)
     baseurl = BASEURL['list']
-    url = '%(baseurl)sPROPOSE_FROM=%(last_proposed_date)s&PAGE_SIZE=100' % locals()
+    url = '%(baseurl)sPROPOSE_FROM=%(last_proposed_date)s&PAGE_SIZE=%(page_size)d' % locals()
 
     directory = '%s/%s' % (DIR['list'], assembly_id)
     fn = '%s/tmp.html' % directory

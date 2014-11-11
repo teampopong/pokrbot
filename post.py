@@ -2,24 +2,23 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import argparse
 import json
 import os.path
 import sys
 import time
 
 from redis_queue import RedisQueue
-from settings import DIR, TEMPLATE_BILL_URL
+from const import DIR, TEMPLATE_BILL_URL, TWITTER_ACCOUNTS
+from settings import TWITTER, FACEBOOK
 import facebook
 import twitter
 
 
-INTERVAL_MIN = 5
-INTERVAL_SEC = INTERVAL_MIN * 60
-
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(current_dir, 'twitter_accounts.json')) as f:
-    TWITTER_ACCOUNTS = json.load(f)
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('target')
+    return parser.parse_args()
 
 
 def refine_bill_content(bill, max_field_len=30):
@@ -70,9 +69,12 @@ def post_bills_facebook(new_bills):
 def post_bills_twitter(new_bills):
     if new_bills:
         cnt = len(new_bills)
-        twitter.post('지금부터 %d분간 %d분 간격으로 %d개의 새 의안을 트윗할 예정입니다.' % (INTERVAL_MIN * cnt, INTERVAL_MIN, cnt))
+        interval_min = TWITTER['INTERVAL'] / 60
+
+        twitter.post('지금부터 %d분간 %d분 간격으로 %d개의 새 의안을 트윗할 예정입니다.' % (interval_min * cnt, interval_min, cnt))
+
     for bill_id in new_bills:
-        time.sleep(INTERVAL_SEC)
+        time.sleep(TWITTER['INTERVAL'])
         bill = get_bill(bill_id)
         post_bill_twitter(bill)
         print '%s posted' % bill['bill_id']
@@ -116,31 +118,30 @@ def ullul(char):
         return '를'
 
 
+def guess_session_id(bill_id):
+    if bill_id.startswith('DD'):
+        return 19
+    elif bill_id.startswith('ZZ'):
+        return int(bill_id[2:4])
+    else:
+        return int(bill_id[:2])
+
+
 def get_bill(bill_id):
+    SESSION = guess_session_id(bill_id)
     with open('%s/%d/%s.json' % (DIR['data'], SESSION, bill_id), 'r') as f:
         bill = json.load(f)
     return bill
 
 
-def usage():
-    print '''post.py COMMAND
-
-COMMAND:
-    twitter
-    facebook'''
-
-
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        usage()
-        sys.exit(1)
+    args = parse_args()
 
-    command = sys.argv[1]
-    if command == 'twitter':
+    if args.target == 'twitter':
         queue = RedisQueue('post_bills_twitter')
         bills = list(queue)
         post_bills_twitter(bills)
-    elif command == 'facebook':
+    elif args.target == 'facebook':
         queue = RedisQueue('post_bills_facebook')
         bills = list(queue)
         post_bills_facebook(bills)
