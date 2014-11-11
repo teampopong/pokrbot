@@ -55,3 +55,8 @@ def post(status):
     oauth = get_oauth()
     requests.post(url="https://api.twitter.com/1.1/statuses/update.json", auth=oauth, data={"status": status})
 
+if __name__ == '__main__':
+    token, secret = setup_oauth()
+    print 'token: {0}'.format(token)
+    print 'secret: {0}'.format(secret)
+
