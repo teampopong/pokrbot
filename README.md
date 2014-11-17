@@ -20,7 +20,7 @@ Facebook, Twitter robots for publishing legislations.
 
          $ python twitter.py
 
-     - Open the link given by the program.
+     - Open the link given by the program. (Make sure to login as the user that you want to tweet posts)
      - Copy and paste the verification code given in the browser into the command line.<br>
      - Then you'll get *oauth token* and *oauth token secret*.
      - Copy and paste them into the blanks of `settings.py`: `TWITTER_OAUTH_TOKEN`, `TWITTER_OAUTH_TOKEN_SECRET`
