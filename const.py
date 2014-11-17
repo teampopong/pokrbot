@@ -2,7 +2,7 @@
 
 import json
 
-from settings import metadir, pdfdir
+from settings import METADIR, PDFDIR
 
 likms           = 'http://likms.assembly.go.kr/bill/jsp'
 PAGE_SIZE       = 50            # number of bills in list page (for crawling)
@@ -12,15 +12,15 @@ HTML_FIELDS     = ['specifics', 'proposers', 'withdrawers', 'summaries']
 TEMPLATE_BILL_URL = 'http://pokr.kr/bill/{0}'
 
 DIR = {
-    'pdf'          : pdfdir + '/pdf',
-    'meta'         : metadir + '/meta',
-    'data'         : metadir + '/json',
-    'txt'          : metadir + '/txt',
-    'list'         : metadir + '/sources/list',
-    'summaries'    : metadir + '/sources/summaries',
-    'specifics'    : metadir + '/sources/specifics',
-    'proposers'    : metadir + '/sources/proposers',
-    'withdrawers'  : metadir + '/sources/withdrawers'
+    'pdf'          : PDFDIR + '/pdf',
+    'meta'         : METADIR + '/meta',
+    'data'         : METADIR + '/json',
+    'txt'          : METADIR + '/txt',
+    'list'         : METADIR + '/sources/list',
+    'summaries'    : METADIR + '/sources/summaries',
+    'specifics'    : METADIR + '/sources/specifics',
+    'proposers'    : METADIR + '/sources/proposers',
+    'withdrawers'  : METADIR + '/sources/withdrawers'
 }
 
 BASEURL = {

@@ -3,13 +3,12 @@
 
 from __future__ import unicode_literals
 import json
-import specific
 from shutil import copyfile
-import pdf
 import re
 
 from redis_queue import RedisQueue
 from const import BASEURL, DIR, PAGE_SIZE, X
+from settings import SESSION
 import utils
 
 
@@ -31,6 +30,7 @@ def fetch_new_bill_ids(assembly_id):
     existing_ids = set(line.split(',', 1)[0].strip('"') for line in lines)
     last_proposed_date = max(line.split('","', 6)[5].strip('"') for line in lines)
     baseurl = BASEURL['list']
+    page_size = PAGE_SIZE
     url = '%(baseurl)sPROPOSE_FROM=%(last_proposed_date)s&PAGE_SIZE=%(page_size)d' % locals()
 
     directory = '%s/%s' % (DIR['list'], assembly_id)
@@ -75,6 +75,6 @@ def parse_columns(columns):
 
 
 if __name__ == '__main__':
-    new_bill_ids = fetch_new_bill_ids(a)
+    new_bill_ids = fetch_new_bill_ids(SESSION)
     push_to_queue('post_bills_twitter', new_bill_ids)
     push_to_queue('post_bills_facebook', new_bill_ids)
