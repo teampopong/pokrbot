@@ -74,9 +74,9 @@ def post_bills_twitter(new_bills):
         twitter.post('지금부터 %d분간 %d분 간격으로 %d개의 새 의안을 트윗할 예정입니다.' % (interval_min * cnt, interval_min, cnt))
 
     for bill_id in new_bills:
-        time.sleep(TWITTER['INTERVAL'])
         bill = get_bill(bill_id)
         post_bill_twitter(bill)
+        time.sleep(TWITTER['INTERVAL'])
         print '%s posted' % bill['bill_id']
 
 
